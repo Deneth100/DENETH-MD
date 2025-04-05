@@ -82,30 +82,23 @@ conn.ev.on('messages.upsert', async(mek) => {
 mek = mek.messages[0]
 if (!mek.message) return	
 mek.message = (getContentType(mek.message) === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
-// Extract the real message if it's ephemeral
-mek.message = (getContentType(mek.message) === 'ephemeralMessage') 
-  ? mek.message.ephemeralMessage.message 
-  : mek.message
-
-// Check if it's a status message and AUTO_READ_STATUS is enabled
 if (
-  mek.key && 
-  mek.key.remoteJid === 'status@broadcast' && 
+  mek.key &&
+  mek.key.remoteJid === 'status@broadcast' &&
   config.AUTO_READ_STATUS === "true"
 ) {
-  await conn.readMessages([mek.key])
+  // Mark status as read
+  await conn.readMessages([mek.key]);
 
-  // 💚 React with green heart if the status contains it
-  const msgText = mek.message?.conversation || mek.message?.extendedTextMessage?.text || ''
-  if (msgText.includes('💚')) {
-    await conn.sendMessage(mek.key.remoteJid, {
-      react: {
-        text: '💚',
-        key: mek.key
-      }
-    })
-  }
+  // Send hardcoded auto-reply message to status
+  const customMessage = '📍 Auto Status Seen Bot By DENETH-MD';
+  await conn.sendMessage(
+    mek.key.remoteJid,
+    { text: customMessage },
+    { quoted: mek }
+  );
 }
+
 
         if (config.ALWAYS_TYPING === "true") {
             await conn.sendPresenceUpdate('composing', from)
@@ -116,7 +109,6 @@ if (
             await conn.sendPresenceUpdate('recording', from)
         }
 
-        setInterval(async () => {
     if (config.ALWAYS_ONLINE === "true") {
         await conn.sendPresenceUpdate('available');
     }
@@ -124,7 +116,6 @@ if (
     if (config.ALWAYS_OFFLINE === "true") {
         await conn.sendPresenceUpdate('unavailable');
     }
-}, 60 * 1000); // every 1 minute
 
 const m = sms(conn, mek)
 const type = getContentType(mek.message)
