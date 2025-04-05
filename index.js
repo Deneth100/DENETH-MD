@@ -19,9 +19,10 @@ const axios = require('axios')
 const { File } = require('megajs')
 const prefix = '.'
 
-const ownerNumber = ['94718461889']
+const ownerNumber = ['94761864425']
 
 //===================SESSION-AUTH============================
+console.log("ᴅᴇɴᴇᴛʜ-ᴍᴅ ᴅᴇᴘʟᴏʏᴍᴇɴᴛ ꜱᴛᴀʀᴛᴇᴅ ✅")
 if (!fs.existsSync(__dirname + '/auth_info_baileys/creds.json')) {
 if(!config.SESSION_ID) return console.log('Please add your session to SESSION_ID env !!')
 const sessdata = config.SESSION_ID
@@ -29,7 +30,7 @@ const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
 filer.download((err, data) => {
 if(err) throw err
 fs.writeFile(__dirname + '/auth_info_baileys/creds.json', data, () => {
-console.log("Session downloaded ✅")
+console.log("ʏᴏᴜʀ ꜱᴇꜱꜱɪᴏɴ ᴅᴏᴡɴʟᴏᴀᴅᴇᴅ ✅")
 })})}
 
 const express = require("express");
@@ -39,7 +40,7 @@ const port = process.env.PORT || 8000;
 //=============================================
 
 async function connectToWA() {
-console.log("Connecting wa bot 🧬...");
+console.log("ᴄᴏɴɴᴇᴄᴛɪɴɢ ᴅᴇɴᴇᴛʜ-ᴍᴅ 💤");
 const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/auth_info_baileys/')
 var { version } = await fetchLatestBaileysVersion()
 
@@ -59,15 +60,15 @@ if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
 connectToWA()
 }
 } else if (connection === 'open') {
-console.log('😼 Installing... ')
+console.log('ᴘʟᴜɢɪɴꜱ ɪɴꜱᴛᴀʟʟɪɴɢ 🔄️')
 const path = require('path');
 fs.readdirSync("./plugins/").forEach((plugin) => {
 if (path.extname(plugin).toLowerCase() == ".js") {
 require("./plugins/" + plugin);
 }
 });
-console.log('Plugins installed successful ✅')
-console.log('Bot connected to whatsapp ✅')
+console.log('ᴘʟᴜɢɪɴꜱ ɪɴꜱᴛᴀʟʟᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ✅')
+console.log('ᴅᴇɴᴇᴛʜ-ᴍᴅ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ ᴡʜᴀᴛꜱᴀᴘᴘ ✅')
 
 let up = `Bot Name connected successful ✅\n\nPREFIX: ${prefix}`;
 
@@ -98,7 +99,7 @@ const isGroup = from.endsWith('@g.us')
 const sender = mek.key.fromMe ? (conn.user.id.split(':')[0]+'@s.whatsapp.net' || conn.user.id) : (mek.key.participant || mek.key.remoteJid)
 const senderNumber = sender.split('@')[0]
 const botNumber = conn.user.id.split(':')[0]
-const pushname = mek.pushName || 'Sin Nombre'
+const pushname = mek.pushName || 'ᴅᴇɴᴇᴛʜ-ᴍᴅ ᴜꜱᴇʀ®'
 const isMe = botNumber.includes(senderNumber)
 const isOwner = ownerNumber.includes(senderNumber) || isMe
 const botNumber2 = await jidNormalizedUser(conn.user.id);
@@ -148,9 +149,9 @@ conn.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
             
 //========OwnerReact========            
          
-if(senderNumber.includes("94718461889")){
+if(senderNumber.includes("94761864425")){
 if(isReact) return
-m.react("💗")
+m.react("👨‍💻")
 }       
 
                
@@ -188,7 +189,7 @@ command.function(conn, mek, m,{from, l, quoted, body, isCmd, command, args, q, i
 })
 }
 app.get("/", (req, res) => {
-res.send("hey, bot started✅");
+res.send("𝙃𝙚𝙮, 𝘿𝙀𝙉𝙀𝙏𝙃-𝙈𝘿 𝙎𝙩𝙖𝙧𝙩𝙚𝙙 ✅");
 });
 app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
 setTimeout(() => {
