@@ -9,7 +9,7 @@
     "restart": "pm2 restart deneth-md"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:denethdev-baileys",
+    "@whiskeysockets/baileys": "git+https://github.com/20070808lk/Baileys",
     "@adiwajshing/keyed-db": "^0.2.4",
     "google-tts-api": "^2.0.2",
     "pino": "^7.0.5",
