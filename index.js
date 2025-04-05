@@ -107,6 +107,25 @@ if (
   }
 }
 
+        if (config.ALWAYS_TYPING === "true") {
+            await conn.sendPresenceUpdate('composing', from)
+        }
+
+
+        if (config.ALWAYS_RECORDING === "true") {
+            await conn.sendPresenceUpdate('recording', from)
+        }
+
+        setInterval(async () => {
+    if (config.ALWAYS_ONLINE === "true") {
+        await conn.sendPresenceUpdate('available');
+    }
+
+    if (config.ALWAYS_OFFLINE === "true") {
+        await conn.sendPresenceUpdate('unavailable');
+    }
+}, 60 * 1000); // every 1 minute
+
 const m = sms(conn, mek)
 const type = getContentType(mek.message)
 const content = JSON.stringify(mek.message)
