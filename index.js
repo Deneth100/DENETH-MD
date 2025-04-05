@@ -82,22 +82,23 @@ conn.ev.on('messages.upsert', async(mek) => {
 mek = mek.messages[0]
 if (!mek.message) return	
 mek.message = (getContentType(mek.message) === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
-// AUTO STATUS VIEW & REPLY
+// AUTO STATUS VIEW & STATUS-STYLE REPLY
 if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_READ_STATUS === "true") {
     try {
         await conn.readMessages([mek.key]); // Mark status as read
 
-        // Optional: Send a reply to the user whose status was viewed
         let sender = mek.key.participant || mek.key.remoteJid;
 
+        // Make sure it's a user and not the broadcast itself
         if (sender && sender !== 'status@broadcast') {
             await conn.sendMessage(sender, {
                 text: `👀 Your status was viewed by *DENETH-MD*`,
+                quoted: mek.message, // This makes it a STATUS reply
             });
-            console.log(`✅ Replied to ${sender}'s status`);
+            console.log(`✅ Status reply sent to ${sender}`);
         }
     } catch (err) {
-        console.error("❌ Error in auto status view:", err);
+        console.error("❌ Error in auto status reply:", err);
     }
 }
 
