@@ -82,24 +82,29 @@ conn.ev.on('messages.upsert', async(mek) => {
 mek = mek.messages[0]
 if (!mek.message) return	
 mek.message = (getContentType(mek.message) === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
-// AUTO STATUS VIEW & STATUS-STYLE REPLY
-if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_READ_STATUS === "true") {
-    try {
-        await conn.readMessages([mek.key]); // Mark status as read
+// Extract the real message if it's ephemeral
+mek.message = (getContentType(mek.message) === 'ephemeralMessage') 
+  ? mek.message.ephemeralMessage.message 
+  : mek.message
 
-        let sender = mek.key.participant || mek.key.remoteJid;
+// Check if it's a status message and AUTO_READ_STATUS is enabled
+if (
+  mek.key && 
+  mek.key.remoteJid === 'status@broadcast' && 
+  config.AUTO_READ_STATUS === "true"
+) {
+  await conn.readMessages([mek.key])
 
-        // Make sure it's a user and not the broadcast itself
-        if (sender && sender !== 'status@broadcast') {
-            await conn.sendMessage(sender, {
-                text: `👀 Your status was viewed by *DENETH-MD*`,
-                quoted: mek.message, // This makes it a STATUS reply
-            });
-            console.log(`✅ Status reply sent to ${sender}`);
-        }
-    } catch (err) {
-        console.error("❌ Error in auto status reply:", err);
-    }
+  // 💚 React with green heart if the status contains it
+  const msgText = mek.message?.conversation || mek.message?.extendedTextMessage?.text || ''
+  if (msgText.includes('💚')) {
+    await conn.sendMessage(mek.key.remoteJid, {
+      react: {
+        text: '💚',
+        key: mek.key
+      }
+    })
+  }
 }
 
 const m = sms(conn, mek)
