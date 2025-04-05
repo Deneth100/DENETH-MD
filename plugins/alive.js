@@ -31,7 +31,7 @@ I Aᴍ Aʟɪᴠᴇ Nᴏᴡ
 > ᴅᴇɴᴇᴛʜ-ᴍᴅ ʙʏ ᴋɪɴɢ X ᴅᴇɴᴇᴛʜᴅᴇᴠ®`;
 
         const sentMsg = await conn.sendMessage(from, {
-            image: { url: `https://github.com/deneth-hansaka-keerthirathna/DENETH-Media/blob/main/DENETH-MD%20V1.jpg?raw=true` },
+            image: { url: `https://i.ibb.co/KBLNYkx/DENETH-MD.jpg` },
             caption: desc,  // Send the description as the caption
             contextInfo: {
                 forwardingScore: 999,
@@ -41,71 +41,5 @@ I Aᴍ Aʟɪᴠᴇ Nᴏᴡ
     } catch (e) {
         console.log(e);
         reply(`${e}`);
-    }
-});
-
-const axios = require('axios');
-
-cmd({
-    pattern: "vv",
-    alias: ['retrive'],
-    desc: "Fetch and resend a ViewOnce message content (image/video/audio).",
-    category: "misc",
-    use: '<reply to view once>',
-    filename: __filename
-},
-async (conn, mek, m, { from, reply }) => {
-    try {
-        const quotedMessage = m.msg?.contextInfo?.quotedMessage;
-
-        // Handle viewOnceMessageV2
-        if (quotedMessage?.viewOnceMessageV2) {
-            const viewOnce = quotedMessage.viewOnceMessageV2.message;
-
-            if (viewOnce?.imageMessage) {
-                const caption = viewOnce.imageMessage.caption || "";
-                const media = await conn.downloadAndSaveMediaMessage(viewOnce.imageMessage);
-                return conn.sendMessage(from, { image: { url: media }, caption }, { quoted: mek });
-            }
-
-            if (viewOnce?.videoMessage) {
-                const caption = viewOnce.videoMessage.caption || "";
-                const media = await conn.downloadAndSaveMediaMessage(viewOnce.videoMessage);
-                return conn.sendMessage(from, { video: { url: media }, caption }, { quoted: mek });
-            }
-
-            if (viewOnce?.audioMessage) {
-                const media = await conn.downloadAndSaveMediaMessage(viewOnce.audioMessage);
-                return conn.sendMessage(from, { audio: { url: media }, mimetype: 'audio/mp4' }, { quoted: mek });
-            }
-        }
-
-        // Fallback for regular quoted ViewOnce messages
-        const quoted = m.quoted?.message?.viewOnceMessage?.message;
-
-        if (!quoted) return reply("Please reply to a ViewOnce message.");
-
-        if (quoted?.imageMessage) {
-            const caption = quoted.imageMessage.caption || "";
-            const media = await conn.downloadAndSaveMediaMessage(quoted.imageMessage);
-            return conn.sendMessage(from, { image: { url: media }, caption }, { quoted: mek });
-        }
-
-        if (quoted?.videoMessage) {
-            const caption = quoted.videoMessage.caption || "";
-            const media = await conn.downloadAndSaveMediaMessage(quoted.videoMessage);
-            return conn.sendMessage(from, { video: { url: media }, caption }, { quoted: mek });
-        }
-
-        if (quoted?.audioMessage) {
-            const media = await conn.downloadAndSaveMediaMessage(quoted.audioMessage);
-            return conn.sendMessage(from, { audio: { url: media }, mimetype: 'audio/mp4' }, { quoted: mek });
-        }
-
-        return reply("This is not a supported ViewOnce media message.");
-
-    } catch (e) {
-        console.error("Error in ViewOnce Fetch:", e);
-        return reply("❌ Failed to fetch ViewOnce message. Please try again.");
     }
 });
