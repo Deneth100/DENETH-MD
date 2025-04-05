@@ -81,24 +81,40 @@ conn.ev.on('creds.update', saveCreds)
 conn.ev.on('messages.upsert', async(mek) => {
 mek = mek.messages[0]
 if (!mek.message) return	
-mek.message = (getContentType(mek.message) === 'ephemeralMessage')
-  ? mek.message.ephemeralMessage.message
-  : mek.message;
-if (
-  mek.key &&
-  mek.key.remoteJid === 'status@broadcast' &&
-  config.AUTO_READ_STATUS === "true"
-) {
-  // Mark status as read
-  await conn.readMessages([mek.key]);
+mek.message = (getContentType(mek.message) === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
+if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_READ_STATUS === "true"){
+await conn.readMessages([mek.key])
+}
 
-  // Send hardcoded auto-reply message to status
-  const customMessage = '📍 Auto Status Seen Bot By DENETH-MD';
-  await conn.sendMessage(
-    mek.key.remoteJid,
-    { text: customMessage },
-    { quoted: mek }
-  );
+if (config.ALWAYS_TYPING === "true") {
+        await conn.sendPresenceUpdate('composing', from)
+}
+
+if (config.ALWAYS_RECORDING === "true") {
+        await conn.sendPresenceUpdate('recording', from)
+}
+
+if (config.ALWAYS_ONLINE === "true") {
+  await conn.sendPresenceUpdate('available', from);
+}
+
+if (config.AUTO_READ_MSG === "true") {
+  try {
+    await conn.readMessages([mek.key]);
+  } catch (err) {
+    console.error("Failed to mark message as read:", err);
+  }
+}
+
+if (config.AUTO_READ_CMD === "true") {
+  const body = mek.message?.conversation || mek.message?.extendedTextMessage?.text || "";
+  if (body.startsWith(prefix)) {
+    try {
+      await conn.readMessages([mek.key]);
+    } catch (err) {
+      console.error("Failed to auto-read command message:", err);
+    }
+  }
 }
 
 const m = sms(conn, mek)
