@@ -84,6 +84,18 @@ mek.message = (getContentType(mek.message) === 'ephemeralMessage') ? mek.message
 if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_READ_STATUS === "true"){
 await conn.readMessages([mek.key])
 }
+        if (config.ALWAYS_ONLINE == 'true'){
+                await conn.sendPresenceUpdate('available', mek.key.remoteJid)
+            }else{
+                await conn.sendPresenceUpdate('unavailable', mek.key.remoteJid)
+            }
+            if(config.AUTO_TYPING == true){
+                conn.sendPresenceUpdate('composing', mek.key.remoteJid)
+            }
+	    if(config.AUTO_RECORDING == true){
+                //await conn.sendPresenceUpdate('recording', mek.key.remoteJid)
+		conn.sendPresenceUpdate('recording', mek.key.remoteJid)
+            }
 const m = sms(conn, mek)
 const type = getContentType(mek.message)
 const content = JSON.stringify(mek.message)
